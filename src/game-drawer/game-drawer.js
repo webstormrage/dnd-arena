@@ -3,6 +3,11 @@ import { drawAll } from './drawers/index';
 
 const MAP_SIZE = 1960;
 
+
+function formatOffset(val){
+    return Math.max(Math.min(val, MAP_SIZE), -MAP_SIZE)
+}
+
 class GameDrawer {
 
     canvas = null;
@@ -58,8 +63,8 @@ class GameDrawer {
         } else {
             const dx = (this.dragging.coords[0] - clientX)/this.scale;
             const dy = (this.dragging.coords[1] - clientY)/this.scale;
-            this.offsetX = Math.max(Math.min(this.offsetX - dx, MAP_SIZE), -MAP_SIZE)
-            this.offsetY = Math.max(Math.min(this.offsetY - dy, MAP_SIZE), -MAP_SIZE);
+            this.offsetX = formatOffset(this.offsetX - dx);
+            this.offsetY = formatOffset(this.offsetY - dy);
             this.dragging.coords = [clientX, clientY];
         }
     }
@@ -81,8 +86,8 @@ class GameDrawer {
         // Restrict scale
         this.scale = Math.min(Math.max(0.5, scale), 4);
 
-        this.offsetX =  Math.max(Math.min(this.offsetX - event.clientX/prevScale + event.clientX/this.scale, MAP_SIZE), -MAP_SIZE);
-        this.offsetY =  Math.max(Math.min(this.offsetY - event.clientY/prevScale + event.clientY/this.scale, MAP_SIZE), -MAP_SIZE);
+        this.offsetX =  formatOffset(this.offsetX - event.clientX/prevScale + event.clientX/this.scale);
+        this.offsetY =  formatOffset(this.offsetY - event.clientY/prevScale + event.clientY/this.scale);
     }
 
     setupSize(){
