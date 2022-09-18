@@ -2,7 +2,8 @@
 const cache = {};
 
 export const IMAGES = {
-    MAP_FOREST_CROSSROADS: '/assets/maps/forest-crossroads.jpg'
+    MAP_FOREST_CROSSROADS: '/assets/maps/forest-crossroads.jpg',
+    CHARACTER_FIGHTER: '/assets/characters/fighter.png',
 };
 
 class ImageStorage {
