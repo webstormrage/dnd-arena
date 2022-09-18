@@ -19,8 +19,16 @@ function drawFighter(ctx, x, y){
     ctx.drawImage(img, x*cellSize + 20, y*cellSize + 7, img.width/3, img.height/3);
 }
 
+function drawCobold(ctx, x, y){
+    const img = imageStorage.getImage(IMAGES.MONSTER_KOBOLD);
+    ctx.drawImage(img, x*cellSize + 20, y*cellSize + 7, img.width/3, img.height/3);
+}
+
 export function drawAll(ctx, options){
     applyTransform(ctx, options);
     drawMap(ctx, options);
     drawFighter(ctx, 16, 2);
+    drawCobold(ctx, 18, 7);
+    drawCobold(ctx, 18, 6);
+    drawCobold(ctx, 19, 6);
 }
