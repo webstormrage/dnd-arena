@@ -1,0 +1,46 @@
+.bottomPanel {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: auto;
+    width: 360px;
+    height: 70px;
+    box-sizing: border-box;
+}
+
+.item {
+    display: inline-block;
+    box-sizing: border-box;
+    height: 66px;
+    width: 66px;
+    border: 1px solid black;
+    margin: 2px;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.item.move {
+    background-image: url('./resources/run.png');
+    background-color: rgba(0,0,0, 0.7);
+}
+
+.item.attack {
+    background-image: url('./resources/crossed-swords.png');
+    background-color: rgba(0,0,0, 0.7);
+}
+
+.item.evasion {
+    background-image: url('./resources/aura.png');
+    background-color: rgba(0,0,0, 0.7);
+}
+
+.item.back {
+    background-image: url('./resources/journey.png');
+    background-color: rgba(0,0,0, 0.7);
+}
+
+.item.run {
+    background-image: url('./resources/sprint.png');
+    background-color: rgba(0,0,0, 0.7);
+}
