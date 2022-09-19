@@ -1,4 +1,5 @@
 import {imageStorage, IMAGES} from "../../images/image-storage";
+import {gameEngine} from "../../game-engine/game-engine";
 
 const cellSize = 70;
 
@@ -14,21 +15,37 @@ function applyTransform(ctx, options) {
     ctx.translate(x0, y0);
 }
 
-function drawFighter(ctx, x, y){
-    const img = imageStorage.getImage(IMAGES.CHARACTER_FIGHTER);
-    ctx.drawImage(img, x*cellSize + 20, y*cellSize + 7, img.width/3, img.height/3);
+
+function drawUnit(ctx, unit, { isUnitActive }){
+    const imageScale = unit.sprite.scale * ( isUnitActive ? 1.1 : 1);
+    const img = imageStorage.getImage(unit.sprite.image);
+    ctx.shadowOffsetX = unit.sprite.shadow.offset[0];
+    ctx.shadowOffsetY = unit.sprite.shadow.offset[1];
+    ctx.shadowColor = unit.sprite.shadow.color;
+    ctx.shadowBlur = unit.sprite.shadow.blur;
+    ctx.drawImage(img,
+        unit.x*cellSize + unit.sprite.offset[0],
+        unit.y*cellSize + unit.sprite.offset[1],
+        img.width * imageScale,
+        img.height * imageScale
+    );
 }
 
-function drawCobold(ctx, x, y){
-    const img = imageStorage.getImage(IMAGES.MONSTER_KOBOLD);
-    ctx.drawImage(img, x*cellSize + 20, y*cellSize + 7, img.width/3, img.height/3);
+function drawUnits(ctx, units, activeUnit){
+    units.forEach(unit => drawUnit(ctx, unit, { isUnitActive: activeUnit === unit }));
+}
+
+function drawCells(ctx, cells){
+    cells.forEach(cell => {
+        const [x, y] = cell;
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+        ctx.fillRect(x*cellSize, y*cellSize, cellSize, cellSize);
+    });
 }
 
 export function drawAll(ctx, options){
     applyTransform(ctx, options);
     drawMap(ctx, options);
-    drawFighter(ctx, 16, 2);
-    drawCobold(ctx, 18, 7);
-    drawCobold(ctx, 18, 6);
-    drawCobold(ctx, 19, 6);
+    drawCells(ctx, gameEngine.getActiveUnitCells());
+    drawUnits(ctx, gameEngine.getUnits(), gameEngine.getActiveUnit());
 }

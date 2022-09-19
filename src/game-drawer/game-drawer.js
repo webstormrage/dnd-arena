@@ -1,4 +1,5 @@
 import { drawAll } from './drawers/index';
+import {gameEngine} from "../game-engine/game-engine";
 
 
 const MAP_SIZE = 1960;
@@ -6,6 +7,15 @@ const MAP_SIZE = 1960;
 
 function formatOffset(val){
     return Math.max(Math.min(val, MAP_SIZE), -MAP_SIZE)
+}
+
+function getCoord(clientX, clientY, scale, offsetX, offsetY) {
+    return [clientX/scale - offsetX, clientY/scale - offsetY];
+}
+
+function getCell(clientX, clientY, scale, offsetX, offsetY) {
+    const [x, y] = getCoord(clientX, clientY, scale, offsetX, offsetY);
+    return [Math.floor(x/70), Math.floor(y/70)];
 }
 
 class GameDrawer {
@@ -49,8 +59,13 @@ class GameDrawer {
         this.canvas.addEventListener('wheel', this.handleWheel);
     }
 
-    handleMouseDown = () => {
+    handleMouseDown = (event) => {
         this.dragging = {};
+        const [x, y] = getCell(event.clientX, event.clientY, this.scale, this.offsetX, this.offsetY);
+        const unit = gameEngine.getUnitFromCell(x,y);
+        if(unit){
+            gameEngine.setUnitActive(unit);
+        }
     }
 
     handleMouseMove = (event) => {
