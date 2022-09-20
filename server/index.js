@@ -75,6 +75,11 @@ app.post('/units/movement/cell',(req, res) => {
         res.send(JSON.stringify(units));
         return;
     }
+    const isBlocked = units.some(u => u.x === x && u.y === y);
+    if(isBlocked){
+        res.send(JSON.stringify(units));
+        return;
+    }
     if(Math.max(Math.abs(unit.x - x), Math.abs(unit.y - y)) > 6) {
         res.send(JSON.stringify(units));
         return;

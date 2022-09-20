@@ -38,8 +38,11 @@ function drawUnits(ctx, units, activeUnit){
 function drawCells(ctx, cells){
     cells.forEach(cell => {
         const [x, y] = cell;
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+        ctx.strokeWidth = 2;
         ctx.fillRect(x*cellSize, y*cellSize, cellSize, cellSize);
+        ctx.strokeRect(x*cellSize, y*cellSize, cellSize, cellSize);
     });
 }
 

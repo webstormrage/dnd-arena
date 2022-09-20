@@ -1,4 +1,5 @@
 import {IMAGES} from "../images/image-storage";
+import {Actions} from "../constants/actions";
 
 const UnitTypes = {
     NPC_KOBOLD: 'kobold',
@@ -99,6 +100,10 @@ class GameEngine {
     }
     async triggerActiveAction(x, y) {
         if(!this.activeAction || !this.activeUnit){
+            return;
+        }
+        // Workaround until other actions are implemented
+        if(this.activeAction !== Actions.MOVEMENT){
             return;
         }
         const response = await fetch(`/units/movement/cell?unitId=${this.activeUnit.id}&x=${x}&y=${y}`, { method: 'POST' });
