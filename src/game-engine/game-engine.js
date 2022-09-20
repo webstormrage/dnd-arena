@@ -86,7 +86,7 @@ class GameEngine {
     }
     async setActiveAction(action) {
         if(!this.activeUnit){
-            return
+            return;
         }
         this.activeAction = action;
         const response = await fetch(`/units/movement/cells?id=${this.activeUnit.id}`);

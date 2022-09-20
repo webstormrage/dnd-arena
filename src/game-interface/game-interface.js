@@ -2,29 +2,17 @@ import React, {useCallback, useEffect, useState} from 'react';
 import styles from './game-interface.module.css';
 import {gameEngine} from "../game-engine/game-engine";
 import {Actions} from "../constants/actions";
-
-function cn(...classes){
-    return classes.map(cl => {
-        if(cl && typeof cl === 'object'){
-            const cls = [];
-            for(let key in cl){
-                if(cl[key]){
-                    cls.push(key);
-                }
-            }
-            return cls.join(' ');
-        }
-        return cl;
-    }).join(' ');
-}
+import {cn} from './react-utils'
 
 export function GameInterface() {
 
     const [activeButton, setActiveButton] = useState(null);
+    const [activeUnit, setActiveUnit] = useState(null);
 
     const updateActiveAction = useCallback(() => {
         setActiveButton(gameEngine.getActiveAction());
-    },[setActiveButton]);
+        setActiveUnit(gameEngine.getActiveUnit());
+    },[setActiveButton, setActiveUnit]);
 
     useEffect(() => {
         gameEngine.subcribe(updateActiveAction);
@@ -34,7 +22,11 @@ export function GameInterface() {
     },[updateActiveAction]);
 
     const handleMovementClick = async () => {
-        const { action } = await gameEngine.setActiveAction(Actions.MOVEMENT);
+         const result = await gameEngine.setActiveAction(Actions.MOVEMENT);
+         if(!result){
+             return;
+         }
+        const { action } = result;
         setActiveButton(action);
     }
 
@@ -59,20 +51,29 @@ export function GameInterface() {
     }
     return (
         <div className={styles.bottomPanel}>
+            {activeUnit && (<div className={styles.portraitCell} >
+                    <img className={styles.portrait} src={activeUnit.sprite.image}/>
+                </div>
+                    )}
             <div className={cn(styles.item, styles.move, {
-                [styles.active]: activeButton === Actions.MOVEMENT
+                [styles.active]: activeButton === Actions.MOVEMENT,
+                [styles.disabled]: !activeUnit
             })} title='Movement - costs 5ft per 5ft.' onClick={handleMovementClick}/>
             <div className={cn(styles.item, styles.attack, {
-                [styles.active]: activeButton === Actions.ATTACK
+                [styles.active]: activeButton === Actions.ATTACK,
+                    [styles.disabled]: !activeUnit
             })} title='Attack - melee or ranged attack.' onClick={handleAttackClick} />
             <div className={cn(styles.item, styles.evasion, {
-                [styles.active]: activeButton === Actions.DODGE
+                [styles.active]: activeButton === Actions.DODGE,
+                [styles.disabled]: !activeUnit
             })} title='Dodge - increase defenses.' onClick={handleDodgeClick} />
             <div className={cn(styles.item, styles.back, {
-                [styles.active]: activeButton === Actions.DISENGAGE
+                [styles.active]: activeButton === Actions.DISENGAGE,
+                [styles.disabled]: !activeUnit
             })} title='Disengage - prevent opportunity of attacks.' onClick={handleDisengageClick} />
             <div className={cn(styles.item, styles.run, {
-                [styles.active]: activeButton === Actions.DASH
+                [styles.active]: activeButton === Actions.DASH,
+                [styles.disabled]: !activeUnit
             })} title='Dash - double movement speed.' onClick={handleDashClick} />
         </div>
     )

@@ -9,6 +9,25 @@
     box-sizing: border-box;
 }
 
+.portraitCell {
+    position: fixed;
+    bottom: 0;
+    transform: translateX(-120%);
+    width: 120px;
+    height: 120px;
+    box-sizing: border-box;
+    border: 8px solid rgba(0, 0, 0, 0.9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.portrait {
+    height: 80px;
+}
+
 .item {
     display: inline-block;
     box-sizing: border-box;
@@ -23,28 +42,39 @@
 .item.move {
     background-image: url('./resources/run.png');
     background-color: rgba(0,0,0, 0.7);
+    cursor: pointer;
 }
 
 .item.attack {
     background-image: url('./resources/crossed-swords.png');
     background-color: rgba(0,0,0, 0.7);
+    cursor: pointer;
 }
 
 .item.evasion {
     background-image: url('./resources/aura.png');
     background-color: rgba(0,0,0, 0.7);
+    cursor: pointer;
 }
 
 .item.back {
     background-image: url('./resources/journey.png');
     background-color: rgba(0,0,0, 0.7);
+    cursor: pointer;
 }
 
 .item.run {
     background-image: url('./resources/sprint.png');
     background-color: rgba(0,0,0, 0.7);
+    cursor: pointer;
 }
 
 .item.active {
     border: 4px solid yellow;
+}
+
+.item.disabled {
+    background-color: rgba(100,100,100, 0.7);
+    border: 1px solid grey;
+    cursor: not-allowed;
 }
