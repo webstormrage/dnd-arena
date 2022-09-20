@@ -46,6 +46,6 @@ function drawCells(ctx, cells){
 export function drawAll(ctx, options){
     applyTransform(ctx, options);
     drawMap(ctx, options);
-    drawCells(ctx, gameEngine.getActiveUnitCells());
+    drawCells(ctx, gameEngine.getActiveActionCells());
     drawUnits(ctx, gameEngine.getUnits(), gameEngine.getActiveUnit());
 }

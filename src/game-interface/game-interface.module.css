@@ -44,3 +44,7 @@
     background-image: url('./resources/sprint.png');
     background-color: rgba(0,0,0, 0.7);
 }
+
+.item.active {
+    border: 4px solid yellow;
+}

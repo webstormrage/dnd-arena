@@ -49,6 +49,7 @@ class GameDrawer {
         this.canvas.removeEventListener('mousemove', this.handleMouseMove);
         this.canvas.removeEventListener('mouseleave', this.handleMouseLeave);
         this.canvas.removeEventListener('wheel', this.handleWheel);
+        this.canvas.removeEventListener('contextmenu', this.handleContextMenu);
     }
 
     setupCallbacks(){
@@ -57,6 +58,13 @@ class GameDrawer {
         this.canvas.addEventListener('mousemove', this.handleMouseMove);
         this.canvas.addEventListener('mouseleave', this.handleMouseLeave);
         this.canvas.addEventListener('wheel', this.handleWheel);
+        this.canvas.addEventListener('contextmenu', this.handleContextMenu);
+    }
+
+    handleContextMenu = (event) => {
+        event.preventDefault();
+        const [x, y] = getCell(event.clientX, event.clientY, this.scale, this.offsetX, this.offsetY);
+        gameEngine.triggerActiveAction(x,y);
     }
 
     handleMouseDown = (event) => {

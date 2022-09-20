@@ -32,8 +32,23 @@ class GameEngine {
     constructor() {
         this.units = [];
         this.activeUnit = null;
-        this.activeUnitCells = [];
+        this.activeAction = null;
+        this.activeActionCells = [];
         this.updateUnits();
+        this.subscribers = [];
+    }
+    subcribe(callback){
+        this.subscribers.push(callback);
+    }
+    unsubscribe(callback){
+        const index = this.subscribers.indexOf(callback);
+        if(index === -1){
+            return;
+        }
+        this.subscribers.splice(index,1);
+    }
+    notify = () => {
+        setTimeout(() => this.subscribers.forEach(c => c()));
     }
     updateUnits(){
         fetch('/units')
@@ -53,17 +68,50 @@ class GameEngine {
     getUnitFromCell(x, y){
         return this.units.find(u => u.x === x && u.y === y);
     }
-    async setUnitActive(unit){
-        const response = await fetch(`/units/movement/cells?id=${unit.id}`);
-        const { cells } = await response.json();
-        this.activeUnitCells = cells;
+    setUnitActive(unit){
         this.activeUnit = unit;
+        this.activeActionCells = [];
+        this.activeAction = null;
+        this.notify();
     }
     getActiveUnit(){
         return this.activeUnit;
     }
-    getActiveUnitCells(){
-        return this.activeUnitCells;
+    getActiveActionCells(){
+        return this.activeActionCells;
+    }
+    getActiveAction(){
+        return this.activeAction;
+    }
+    async setActiveAction(action) {
+        if(!this.activeUnit){
+            return
+        }
+        this.activeAction = action;
+        const response = await fetch(`/units/movement/cells?id=${this.activeUnit.id}`);
+        const { cells } = await response.json();
+        this.activeActionCells = cells;
+        this.notify();
+        return {
+            action: this.activeAction,
+            cells: this.activeActionCells
+        }
+    }
+    async triggerActiveAction(x, y) {
+        if(!this.activeAction || !this.activeUnit){
+            return;
+        }
+        const response = await fetch(`/units/movement/cell?unitId=${this.activeUnit.id}&x=${x}&y=${y}`, { method: 'POST' });
+        const units = await response.json();
+        this.units = units.map(unit => {
+            return {
+                ...unit,
+                sprite: Sprites[unit.type]
+            };
+        });
+        this.activeAction = null;
+        this.activeActionCells = [];
+        this.notify();
     }
 }
 

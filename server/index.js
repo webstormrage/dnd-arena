@@ -10,7 +10,7 @@ const UnitTypes = {
     CHARACTER_FIGHTER: 'fighter'
 }
 
-const mockedUnits  = [
+const units  = [
     {
         id: '0',
         type: UnitTypes.NPC_KOBOLD,
@@ -39,12 +39,12 @@ const mockedUnits  = [
 
 
 app.get('/units', (req, res) => {
-    res.send(JSON.stringify(mockedUnits));
+    res.send(JSON.stringify(units));
 })
 
 app.get('/units/movement/cells', (req, res) => {
     const { id } = req.query;
-    const unit = mockedUnits.find(u => u.id === id);
+    const unit = units.find(u => u.id === id);
     if(!unit) {
         res.send(JSON.stringify({
             cells: []
@@ -64,6 +64,24 @@ app.get('/units/movement/cells', (req, res) => {
     res.send(JSON.stringify({
         cells
     }));
+});
+
+app.post('/units/movement/cell',(req, res) => {
+    const { unitId } = req.query;
+    const x = Number(req.query.x);
+    const y = Number(req.query.y)
+    const unit = units.find(u => u.id === unitId);
+    if(!unit || x < 0 || y < 0 || x > 28 || y > 28){
+        res.send(JSON.stringify(units));
+        return;
+    }
+    if(Math.max(Math.abs(unit.x - x), Math.abs(unit.y - y)) > 6) {
+        res.send(JSON.stringify(units));
+        return;
+    }
+    unit.x = x;
+    unit.y = y;
+    res.send(JSON.stringify(units));
 });
 
 app.listen(port, () => {
