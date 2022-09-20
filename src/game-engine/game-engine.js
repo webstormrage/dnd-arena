@@ -1,8 +1,12 @@
 import {IMAGES} from "../images/image-storage";
 
+const UnitTypes = {
+    NPC_KOBOLD: 'kobold',
+    CHARACTER_FIGHTER: 'fighter'
+}
 
 const Sprites = {
-    kobold: {
+    [UnitTypes.NPC_KOBOLD]: {
         shadow: {
             color: '#FF2400',
             blur: 40,
@@ -12,7 +16,7 @@ const Sprites = {
         scale: 1/3,
         image: IMAGES.MONSTER_KOBOLD
     },
-    fighter: {
+    [UnitTypes.CHARACTER_FIGHTER]: {
         shadow: {
             color: '#2a52be',
             blur: 40,
@@ -24,35 +28,24 @@ const Sprites = {
     }
 }
 
-
-const mockedUnits = [
-    {
-        sprite: Sprites.kobold,
-        x: 18,
-        y: 7
-    },
-    {
-        sprite: Sprites.kobold,
-        x: 18,
-        y: 6
-    },
-    {
-        sprite: Sprites.kobold,
-        x: 19,
-        y: 6
-    },
-    {
-        sprite: Sprites.fighter,
-        x: 16,
-        y: 2
-    }
-];
-
 class GameEngine {
     constructor() {
-        this.units = mockedUnits;
+        this.units = [];
         this.activeUnit = null;
         this.activeUnitCells = [];
+        this.updateUnits();
+    }
+    updateUnits(){
+        fetch('/units')
+            .then(r => r.json())
+            .then(units => {
+                this.units = units.map(unit => {
+                    return {
+                        ...unit,
+                        sprite: Sprites[unit.type]
+                    }
+                })
+            })
     }
     getUnits() {
         return this.units;
@@ -60,19 +53,11 @@ class GameEngine {
     getUnitFromCell(x, y){
         return this.units.find(u => u.x === x && u.y === y);
     }
-    setUnitActive(unit){
-        this.activeUnit = unit;
-        const cells = [];
-        for(let i = -6; i <= 6; ++i){
-            for(let j = -6; j <= 6; ++j){
-                const x = (unit.x + i);
-                const y = (unit.y + j);
-                if(x >= 0 && y >= 0 && x <= 28 && y <= 28){
-                    cells.push([x, y]);
-                }
-            }
-        }
+    async setUnitActive(unit){
+        const response = await fetch(`/units/movement/cells?id=${unit.id}`);
+        const { cells } = await response.json();
         this.activeUnitCells = cells;
+        this.activeUnit = unit;
     }
     getActiveUnit(){
         return this.activeUnit;

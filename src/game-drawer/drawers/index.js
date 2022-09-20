@@ -32,7 +32,7 @@ function drawUnit(ctx, unit, { isUnitActive }){
 }
 
 function drawUnits(ctx, units, activeUnit){
-    units.forEach(unit => drawUnit(ctx, unit, { isUnitActive: activeUnit === unit }));
+    units.forEach(unit => drawUnit(ctx, unit, { isUnitActive: activeUnit?.id === unit.id }));
 }
 
 function drawCells(ctx, cells){
